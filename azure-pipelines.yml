@@ -6,9 +6,9 @@ container:
   options: -v /usr/bin/docker:/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock
 
 variables:
-  imageName: 'aci-sampleapp'
+  imageName: 'sampleapp'
   tags: |
-    latest
+    3a4019a9a6fcba53072957cce22673e3c33865d5
 steps:
 - task: Docker@2
   displayName: Build image
@@ -17,7 +17,7 @@ steps:
     command: build
     tags: $(tags)
 
-- script: inline_scan analyze -s https://secure.sysdig.com -k $(secureApiKey) $(imageName):latest
+- script: inline_scan analyze -s https://secure.sysdig.com -k $(secureApiKey) $(imageName):3a4019a9a6fcba53072957cce22673e3c33865d5
   displayName: Scan image
 
 - task: Docker@2
