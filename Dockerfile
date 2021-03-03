@@ -1,4 +1,4 @@
-FROM node:15-alpine
+FROM  node:lts-alpine3.12
 
 COPY . /src
 RUN cd /src && npm install
