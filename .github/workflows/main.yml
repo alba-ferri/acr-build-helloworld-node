@@ -27,7 +27,7 @@ jobs:
         - name: Scan image
           uses: sysdiglabs/scan-action@v3
           with:
-            image-tag: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
+            image-tag: "${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest"
             sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
 
         - name: 'Deploy to Azure Container Instances'
