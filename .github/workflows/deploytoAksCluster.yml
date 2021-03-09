@@ -1,0 +1,50 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: msigniteacr.azurecr.io
+        username: ${{ secrets.acr_msigniteacr_username }}
+        password: ${{ secrets.acr_msigniteacr_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/" -f  "Dockerfile" -t msigniteacr.azurecr.io/aksdemo:${{ github.sha }} --label dockerfile-path=Dockerfile
+        docker push msigniteacr.azurecr.io/aksdemo:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_aksdemo_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep demo-ms-ignite | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace demo-ms-ignite`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: demo-ms-ignite
+        container-registry-url: msigniteacr.azurecr.io
+        container-registry-username: ${{ secrets.acr_msigniteacr_username }}
+        container-registry-password: ${{ secrets.acr_msigniteacr_password }}
+        secret-name: aksdemodockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: demo-ms-ignite
+        manifests: |
+          manifests/deployment.yml
+          manifests/service.yml
+        images: |
+          msigniteacr.azurecr.io/aksdemo:${{ github.sha }}
+        imagepullsecrets: |
+          aksdemodockerauth
