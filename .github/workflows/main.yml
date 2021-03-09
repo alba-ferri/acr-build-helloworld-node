@@ -38,6 +38,9 @@ jobs:
           with:
             sarif_file: ${{ steps.scan.outputs.sarifReport }}
 
+        - run:  
+             docker push acr-build-helloworld-node/sampleapp:latest
+
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
