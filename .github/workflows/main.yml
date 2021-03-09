@@ -21,7 +21,7 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
+            docker build . --file Dockerfile -t acr-build-helloworld-node/sampleapp:latest
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
 
         - name: Scan image
