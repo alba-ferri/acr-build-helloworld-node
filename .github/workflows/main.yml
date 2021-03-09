@@ -27,6 +27,7 @@ jobs:
 
         - name: Scan image
           uses: sysdiglabs/scan-action@v3
+          id: scan
           with:
             image-tag: "acr-build-helloworld-node/sampleapp:latest"
             sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
