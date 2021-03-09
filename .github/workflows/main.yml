@@ -30,6 +30,11 @@ jobs:
           with:
             image-tag: "acr-build-helloworld-node/sampleapp:latest"
             sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+            run-as-user: root
+
+          - uses: github/codeql-action/upload-sarif@v1
+          with:
+            sarif_file: ${{ steps.scan.outputs.sarifReport }}
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
