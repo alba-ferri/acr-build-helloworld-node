@@ -22,8 +22,7 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
             docker build . --file Dockerfile -t acr-build-helloworld-node/sampleapp:latest
-            # docker build . --file Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
-            # docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
+            docker push acr-build-helloworld-node/sampleapp:latest
 
         - name: Scan image
           uses: sysdiglabs/scan-action@v3
@@ -37,9 +36,6 @@ jobs:
         - uses: github/codeql-action/upload-sarif@v1
           with:
             sarif_file: ${{ steps.scan.outputs.sarifReport }}
-
-        - run:  
-             docker push acr-build-helloworld-node/sampleapp:latest
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
