@@ -12,7 +12,7 @@ jobs:
         - run: 
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
 
-        - name: Scan image
+        - name: 'Scan image'
           uses: sysdiglabs/scan-action@v3
           id: scan
           with:
