@@ -25,7 +25,6 @@ jobs:
           with:
             sarif_file: ${{ steps.scan.outputs.sarifReport }}
 
-#        - name: 'Login'
         - uses: azure/docker-login@v1
           with:
             login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
