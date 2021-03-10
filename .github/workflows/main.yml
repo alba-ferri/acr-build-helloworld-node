@@ -1,0 +1,23 @@
+name: Build_and_Deploy
+
+on: [push]
+
+jobs:
+
+    build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout GitHub Action
+          uses: actions/checkout@v1
+
+        - run: docker build . --file Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
+
+        - uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+
+
