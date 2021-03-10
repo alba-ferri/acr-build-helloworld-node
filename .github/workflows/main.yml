@@ -4,21 +4,16 @@ jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-
         - name: Checkout GitHub Action
           uses: actions/checkout@v1
-          
         - run: docker build . --file Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
-        
         - name: 'Login'
           uses: azure/docker-login@v1
           with:
             login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
-
         - run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
-
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
