@@ -14,15 +14,8 @@ jobs:
           with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
         
-        - name: 'Build and push image'
-          uses: azure/docker-login@v1
-          with:
-            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
-        - run: |
+        - run: 
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
-            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
 
         - name: Scan image
           uses: sysdiglabs/scan-action@v3
@@ -37,6 +30,14 @@ jobs:
           with:
             sarif_file: ${{ steps.scan.outputs.sarifReport }}
 
+        - name: 'Login'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+
+        - run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
