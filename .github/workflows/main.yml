@@ -9,23 +9,28 @@ jobs:
         - name: 'Checkout GitHub Action'
           uses: actions/checkout@main
           
-        - run: 
-            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+        - run: docker build . --file Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
 
-        - name: 'Scan image'
-          uses: sysdiglabs/scan-action@v3
-          id: scan
-          with:
-            image-tag: "${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest"
-            sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
-            run-as-user: root
-            input-type: docker-daemon 
+        - name: Scan image
+          uses: sysdiglabs/scan-action@v3
+          id: scan
+          with:
+            image-tag: "${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest"
+            sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
+            run-as-user: root
+            input-type: docker-daemon 
 
-        - uses: github/codeql-action/upload-sarif@v1
-          with:
-            sarif_file: ${{ steps.scan.outputs.sarifReport }}
-
-        - uses: azure/docker-login@v1
+        - uses: github/codeql-action/upload-sarif@v1
+          with:
+            sarif_file: ${{ steps.scan.outputs.sarifReport }}
+        
+        - name: 'Login'
+          uses: azure/docker-login@v1
           with:
             login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
             username: ${{ secrets.REGISTRY_USERNAME }}
@@ -38,7 +43,7 @@ jobs:
           with:
             resource-group: ${{ secrets.RESOURCE_GROUP }}
             dns-name-label: ${{ secrets.RESOURCE_GROUP }}${{ github.run_number }}
-            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
+            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
             registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
             registry-username: ${{ secrets.REGISTRY_USERNAME }}
             registry-password: ${{ secrets.REGISTRY_PASSWORD }}
