@@ -2,7 +2,7 @@ on: [push]
 name: Linux_Container_Workflow
 
 jobs:
-    build-and-deploy:
+    build-and-push2ACR:
         runs-on: ubuntu-latest
         steps:
         # checkout the repo
@@ -28,13 +28,18 @@ jobs:
         - uses: github/codeql-action/upload-sarif@v1
           with:
             sarif_file: ${{ steps.scan.outputs.sarifReport }}
-        
-        - name: 'Login'
-          uses: azure/docker-login@v1
+
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
           with:
-            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+#        - name: 'Login'
+#          uses: azure/docker-login@v1
+#          with:
+#            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+#            username: ${{ secrets.REGISTRY_USERNAME }}
+#            password: ${{ secrets.REGISTRY_PASSWORD }}
 
         - run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:latest
 
