@@ -12,7 +12,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '8db17a54-ca4b-47d3-ab72-e27206435f4a'
-  imageRepository: 'albaferriacrbuildhelloworldnode'
+  imageRepository: 'sampleapp'
   containerRegistry: 'msigniteacr.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -46,7 +46,6 @@ stages:
 
 - stage: Deploy
   displayName: Deploy stage
-  dependsOn: Build
 
   jobs:
   - deployment: Deploy
