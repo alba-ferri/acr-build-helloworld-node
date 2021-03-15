@@ -4,7 +4,7 @@ const port = 80
 
 const server = http.createServer((request, response) => {
   response.writeHead(200, {'Content-Type': 'text/plain'})
-  response.write('Hello MS Ignite atendees!\n')
+  response.write('Demo for MS ignite atendees!\n')
   response.end('Version: ' + process.env.NODE_VERSION + '\n')
 })
 
