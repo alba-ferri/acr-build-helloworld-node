@@ -10,7 +10,7 @@ jobs:
           uses: actions/checkout@main
           
         - name: 'Build image'
-          run: docker build . --file Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/uns-sampleapp:latest
+          run: docker build . --file Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/uns-sampleapp:${{ github.run_number }}
 
         - name: 'Login via Azure CLI'
           uses: azure/login@v1
@@ -25,14 +25,14 @@ jobs:
             password: ${{ secrets.REGISTRY_PASSWORD }}
 
         - name: 'Push image to Azure Registry'
-          run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/uns-sampleapp:latest
+          run: docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/uns-sampleapp:${{ github.run_number }}
 
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
             resource-group: ${{ secrets.RESOURCE_GROUP }}
             dns-name-label: msignitedemowebapp${{ github.run_number }} 
-            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/uns-sampleapp:latest
+            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/uns-sampleapp:${{ github.run_number }}
             registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
             registry-username: ${{ secrets.REGISTRY_USERNAME }}
             registry-password: ${{ secrets.REGISTRY_PASSWORD }}
