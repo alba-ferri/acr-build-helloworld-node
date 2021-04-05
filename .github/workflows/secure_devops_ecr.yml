@@ -16,7 +16,7 @@ jobs:
           uses: sysdiglabs/scan-action@v3
           id: scan
           with:
-            image-tag: "845151661675.dkr.ecr.us-east-1.amazonaws.com/node-hello-world:${{ github.run_number }"
+            image-tag: "845151661675.dkr.ecr.us-east-1.amazonaws.com/node-hello-world:${{ github.run_number }}"
             sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN }}
             run-as-user: root
             input-type: docker-daemon 
